@@ -39,48 +39,56 @@
       font-weight: normal;
       font-style: normal;
     }
+
     @font-face {
       font-family: 'Routed Gothic';
       src: url('fonts/routed-gothic-italic.ttf') format('truetype');
       font-weight: normal;
       font-style: italic;
     }
+
     @font-face {
       font-family: 'Routed Gothic Half Italic';
       src: url('fonts/routed-gothic-half-italic.ttf') format('truetype');
       font-weight: normal;
       font-style: italic;
     }
+
     @font-face {
       font-family: 'Routed Gothic Narrow';
       src: url('fonts/routed-gothic-narrow.ttf') format('truetype');
       font-weight: normal;
       font-style: normal;
     }
+
     @font-face {
       font-family: 'Routed Gothic Narrow';
       src: url('fonts/routed-gothic-narrow-italic.ttf') format('truetype');
       font-weight: normal;
       font-style: italic;
     }
+
     @font-face {
       font-family: 'Routed Gothic Narrow Half Italic';
       src: url('fonts/routed-gothic-narrow-half-italic.ttf') format('truetype');
       font-weight: normal;
       font-style: italic;
     }
+
     @font-face {
       font-family: 'Routed Gothic Wide';
       src: url('fonts/routed-gothic-wide.ttf') format('truetype');
       font-weight: normal;
       font-style: normal;
     }
+
     @font-face {
       font-family: 'Routed Gothic Wide';
       src: url('fonts/routed-gothic-wide-italic.ttf') format('truetype');
       font-weight: normal;
       font-style: italic;
     }
+
     @font-face {
       font-family: 'Routed Gothic Wide Half Italic';
       src: url('fonts/routed-gothic-wide-half-italic.ttf') format('truetype');
@@ -89,10 +97,6 @@
     }
 
     /* PAGE */
-    i {
-      font-family: 'Routed Gothic', sans-serif;
-      font-style: italic;
-    }
 
     .text {
       font-family: 'Routed Gothic', sans-serif;
@@ -100,7 +104,7 @@
       opacity: 0;
       font-size: 4.95vw;
       line-height: 4.95vw;
-      letter-spacing: -0.15vw;
+      letter-spacing: -0.05vw;
       font-variant-ligatures: normal;
       visibility: hidden;
     }
@@ -114,6 +118,7 @@
     .wave {
       display: inline-block;
       animation: wave 1s infinite ease-in-out;
+      letter-spacing: -.5vw;
     }
 
     @keyframes wave {
@@ -190,14 +195,20 @@
 
 <body style="display:none;">
   <div class="text">
-    <h1 style="animation-delay: 0.1s;">Hei, I'm <b>Sander Joon</b>, a film director and <span class="wave"
-        style="animation-delay: 0.0s">a</span><span class="wave" style="animation-delay: 0.2s">n</span><span
-        class="wave" style="animation-delay: 0.2s">i</span><span class="wave"
-        style="animation-delay: 0.3s">m</span><span class="wave" style="animation-delay: 0.4s">a</span><span
-        class="wave" style="animation-delay: 0.5s">t</span><span class="wave"
-        style="animation-delay: 0.6s">o</span><span class="wave" style="animation-delay: 0.7s">r</span>
-      based in Estonia.</h1>
-    <p style="animation-delay: 0.2s;">sander.joon@gmail.com <span class="emoji">👋&#xFE0E;</span></p>
+    <h1 style="animation-delay: 0.1s;">Hei, I'm <span
+        style="font-family: 'Routed Gothic Wide'; font-weight: bold; letter-spacing: -0.4vw;">Sander Joon</span>, a film
+      director and
+      <span style="font-family: 'Routed Gothic Wide'; font-style: italic;">
+        <span class="wave" style="animation-delay: 0.0s">a</span><span class="wave"
+          style="animation-delay: 0.2s">n</span><span class="wave" style="animation-delay: 0.2s">i</span><span
+          class="wave" style="animation-delay: 0.3s">m</span><span class="wave"
+          style="animation-delay: 0.4s">a</span><span class="wave" style="animation-delay: 0.5s">t</span><span
+          class="wave" style="animation-delay: 0.6s">o</span><span class="wave" style="animation-delay: 0.7s">r</span>
+      </span>
+      based in Estonia.
+    </h1>
+    <p style="font-family: 'Routed Gothic'; animation-delay: 0.2s;">sander.joon@gmail.com <span
+        class="emoji">👋&#xFE0E;</span></p>
     <p style="animation-delay: 0.3s; padding-bottom: 1vw;">My <a target="_blank"
         href="https://press.oscars.org/news/95th-oscarsr-shortlists-10-award-categories-announced#:~:text=%E2%80%9CSave%20Ralph%E2%80%9D-,%E2%80%9CSierra%E2%80%9D,-%E2%80%9CSteakhouse%E2%80%9D"><i>Oscars-shortlisted</i></a>
       animated short:</p>
