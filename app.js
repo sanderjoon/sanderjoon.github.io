@@ -1,0 +1,545 @@
+/**
+ * sanderjoon.com v2 - Minimalist Video Portfolio
+ */
+
+(function () {
+  'use strict';
+
+  let currentTag = 'all';
+  const expandedProjects = new Set();
+  let currentColumnCount = 0;
+
+  // Elements
+  const filterBar = document.getElementById('filter-bar');
+  const masonryContainer = document.getElementById('masonry-container');
+
+  /**
+   * Check if URL is an MP4 video file
+   */
+  function isMp4Url(url) {
+    if (!url) return false;
+    return /\.mp4(\?.*)?$/i.test(url.trim());
+  }
+
+  /**
+   * Convert YouTube or Vimeo URL into privacy-friendly embed URL
+   */
+  function getEmbedUrl(url) {
+    if (!url) return '';
+    // Vimeo
+    const vimeoMatch = url.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/);
+    if (vimeoMatch) {
+      return `https://player.vimeo.com/video/${vimeoMatch[1]}?title=0&byline=0&portrait=0&dnt=1`;
+    }
+    // YouTube
+    const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
+    if (ytMatch) {
+      return `https://www.youtube.com/embed/${ytMatch[1]}?rel=0`;
+    }
+    return url;
+  }
+
+  /**
+   * Parse two-column table data (credits, awards, or custom specs)
+   * Supports:
+   * - Multiline string: "Role: Name" or "Award: Festival"
+   * - Array of objects: [ { role, name }, { award, festival }, etc. ]
+   */
+  function parseTableData(data) {
+    if (!data) return [];
+    if (Array.isArray(data)) {
+      return data.map(item => {
+        if (typeof item !== 'object' || item === null) {
+          return { col1: '', col2: String(item) };
+        }
+        const keys = Object.keys(item);
+        const col1 = item.role || item.award || item.category || item.year || item.title || item[keys[0]] || '';
+        const col2 = item.name || item.festival || item.winner || item.institution || item[keys[1]] || '';
+        return { col1: String(col1), col2: String(col2) };
+      });
+    }
+    if (typeof data === 'string') {
+      return data
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0)
+        .map(line => {
+          const sepIndex = line.indexOf(':') !== -1 ? line.indexOf(':') : line.indexOf(',');
+          if (sepIndex !== -1) {
+            return {
+              col1: line.substring(0, sepIndex).trim(),
+              col2: line.substring(sepIndex + 1).trim()
+            };
+          }
+          return { col1: '', col2: line };
+        });
+    }
+    return [];
+  }
+
+  /**
+   * Render a two-column table with an optional section label
+   */
+  function renderTableHtml(data, className, label) {
+    const list = parseTableData(data);
+    if (list.length === 0) return '';
+    const labelHtml = label ? `<div class="section-label">${escapeHtml(label)}</div>` : '';
+    return `
+      <div class="${className || 'credits-box'}">
+        ${labelHtml}
+        <table class="credits-table">
+          <tbody>
+            ${list.map(row => `
+              <tr>
+                <td class="credit-role">${escapeHtml(row.col1)}</td>
+                <td class="credit-name">${escapeHtml(row.col2)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  /**
+   * Format description:
+   * 1. Converts custom <table-box title="...">...</table-box> anywhere in description into styled tables
+   * 2. Formats plain text blocks (separated by blank lines) into <p> paragraphs
+   */
+  function formatDescription(desc) {
+    if (!desc) return '';
+
+    // Convert <table-box title="...">...</table-box> or <table-box>...</table-box>
+    let content = desc.replace(/<table-box(?:\s+title="([^"]*)")?>([\s\S]*?)<\/table-box>/gi, (match, title, body) => {
+      return renderTableHtml(body, 'credits-box', title);
+    });
+
+    // If description doesn't contain explicit <p> or <div> tags, format blank-line-separated blocks into <p>
+    if (!/<(p|div|table|ul|ol|h[1-6])/i.test(content)) {
+      content = content
+        .trim()
+        .split(/\n\s*\n/)
+        .map(block => {
+          const trimmed = block.trim();
+          if (!trimmed) return '';
+          if (/^<(div|table|iframe|video|p|ul|ol|img)/i.test(trimmed)) {
+            return trimmed;
+          }
+          return `<p>${trimmed.replace(/\n/g, '<br>')}</p>`;
+        })
+        .join('\n');
+    }
+
+    return content;
+  }
+
+  /**
+   * Determine column count based on viewport width
+   */
+  function getColumnCount() {
+    const width = window.innerWidth;
+    if (width >= 1024) return 3;
+    if (width >= 640) return 2;
+    return 1;
+  }
+
+  function getProjects() {
+    if (typeof window !== 'undefined' && Array.isArray(window.projects)) {
+      return window.projects;
+    }
+    if (typeof projects !== 'undefined' && Array.isArray(projects)) {
+      return projects;
+    }
+    return [];
+  }
+
+  /**
+   * Helper to check if a string is a 4-digit year
+   */
+  function isYear(str) {
+    return /^\d{4}$/.test(String(str).trim());
+  }
+
+  /**
+   * Render Tag Filter Buttons on Top Row
+   * Order: "Sander Joon" (All) -> Category tags -> Years as last tags
+   */
+  function renderFilterBar() {
+    const projectList = getProjects();
+    if (!filterBar || !Array.isArray(projectList)) return;
+
+    const categoryTagSet = new Set();
+    const yearSet = new Set();
+
+    projectList.forEach(p => {
+      // Collect tags from project.tags
+      if (Array.isArray(p.tags)) {
+        p.tags.forEach(tag => {
+          const trimmed = String(tag).trim();
+          if (trimmed) {
+            if (isYear(trimmed)) {
+              yearSet.add(trimmed);
+            } else {
+              categoryTagSet.add(trimmed);
+            }
+          }
+        });
+      }
+
+      // Collect years from project.year
+      if (p.year) {
+        const trimmedYear = String(p.year).trim();
+        if (trimmedYear) {
+          yearSet.add(trimmedYear);
+        }
+      }
+    });
+
+    // Category tags sorted alphabetically
+    const categoryTags = Array.from(categoryTagSet).sort();
+
+    // Year tags sorted descending (newest first)
+    const yearTags = Array.from(yearSet).sort((a, b) => b.localeCompare(a));
+
+    filterBar.innerHTML = '';
+
+    // 1. "Sander Joon" button (acts as "All")
+    const allBtn = document.createElement('button');
+    allBtn.type = 'button';
+    allBtn.className = `tag-btn ${currentTag === 'all' ? 'active' : ''}`;
+    allBtn.textContent = 'Sander Joon';
+    allBtn.setAttribute('data-tag', 'all');
+    allBtn.addEventListener('click', () => setTagFilter('all'));
+    filterBar.appendChild(allBtn);
+
+    // 2. Category tag buttons
+    categoryTags.forEach(tag => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `tag-btn ${currentTag === tag ? 'active' : ''}`;
+      btn.textContent = tag;
+      btn.setAttribute('data-tag', tag);
+      btn.addEventListener('click', () => setTagFilter(tag));
+      filterBar.appendChild(btn);
+    });
+
+    // 3. Year tags as last tags
+    yearTags.forEach(year => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `tag-btn ${currentTag === year ? 'active' : ''}`;
+      btn.textContent = year;
+      btn.setAttribute('data-tag', year);
+      btn.addEventListener('click', () => setTagFilter(year));
+      filterBar.appendChild(btn);
+    });
+  }
+
+  /**
+   * Filter projects by tag or year
+   */
+  function setTagFilter(tag) {
+    if (currentTag === tag) return;
+    currentTag = tag;
+
+    // Update active class on buttons
+    const buttons = filterBar.querySelectorAll('.tag-btn');
+    buttons.forEach(btn => {
+      const btnTag = btn.getAttribute('data-tag');
+      btn.classList.toggle('active', btnTag === currentTag);
+    });
+
+    renderProjects();
+  }
+
+  /**
+   * Helper to escape HTML attributes & text
+   */
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function getProjectTitle(project) {
+    if (!project || project.title === undefined || project.title === null) return '';
+    return String(project.title).trim();
+  }
+
+  /**
+   * Create a project card element
+   */
+  function createProjectCard(project, index) {
+    const projectTitle = getProjectTitle(project);
+    const projectKey = projectTitle || `project-${index}`;
+    const imageUrl = project.imageUrl || project.image;
+    const hasMedia = Boolean(project.videoUrl || imageUrl);
+    const hasDescription = Boolean(project.description || project.credits || project.awards);
+    const isTitlelessCard = !projectTitle && !project.year;
+    const isDescriptionOnlyTitlelessCard = !projectTitle && !project.year && hasDescription;
+    const hasExpandableContent = hasDescription;
+
+    // Cards without media (or with expandable: false / expanded: true) stay open directly
+    const isAlwaysExpanded = project.expandable === false || project.expanded === true || (!hasExpandableContent && project.expandable !== true) || isDescriptionOnlyTitlelessCard;
+    const isExpanded = isAlwaysExpanded || expandedProjects.has(projectKey);
+
+    const card = document.createElement('article');
+    card.className = `project-card ${isExpanded ? 'expanded' : ''} ${isAlwaysExpanded ? 'always-expanded' : ''}`;
+    card.id = `project-${index}`;
+
+    // Custom height / aspect ratio support
+    let customStyleAttr = '';
+    if (project.aspectRatio) {
+      customStyleAttr = `style="aspect-ratio: ${escapeHtml(project.aspectRatio)};"`;
+    } else if (project.height) {
+      customStyleAttr = `style="height: ${escapeHtml(project.height)}; aspect-ratio: unset;"`;
+    }
+
+    // Media Slot: Video (MP4/Vimeo/YouTube) OR Image OR None (pure text box)
+    let mediaHtml = '';
+    if (project.videoUrl) {
+      if (isMp4Url(project.videoUrl)) {
+        mediaHtml = `
+          <div class="video-wrapper" ${customStyleAttr}>
+            <video 
+              src="${escapeHtml(project.videoUrl)}" 
+              controls 
+              playsinline 
+              preload="metadata"
+              title="${escapeHtml(projectTitle)}">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        `;
+      } else {
+        const embedUrl = getEmbedUrl(project.videoUrl);
+        if (embedUrl) {
+          mediaHtml = `
+            <div class="video-wrapper" ${customStyleAttr}>
+              <iframe 
+                src="${embedUrl}" 
+                title="${escapeHtml(projectTitle)}" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen 
+                loading="lazy">
+              </iframe>
+            </div>
+          `;
+        }
+      }
+    } else if (imageUrl) {
+      const hasRatioClass = project.aspectRatio ? 'has-ratio' : '';
+      mediaHtml = `
+        <div class="image-wrapper ${hasRatioClass}" ${customStyleAttr}>
+          <img 
+            src="${escapeHtml(imageUrl)}" 
+            alt="${escapeHtml(projectTitle)}" 
+            class="card-main-image" 
+            loading="lazy" 
+          />
+        </div>
+      `;
+    }
+
+    // Formatted Description (supports text blocks, HTML, images, and embedded <table-box>)
+    const descriptionHtml = project.description
+      ? `<div class="card-description">${formatDescription(project.description)}</div>`
+      : '';
+
+    // Append standalone credits and awards if provided as top-level fields
+    // (Only appends if not already included via <table-box> in description)
+    const hasEmbeddedTables = project.description && /<table-box/i.test(project.description);
+    let standaloneCreditsHtml = '';
+    let standaloneAwardsHtml = '';
+    if (!hasEmbeddedTables) {
+      if (project.credits) {
+        standaloneCreditsHtml = renderTableHtml(project.credits, 'credits-box', 'Credits');
+      }
+      if (project.awards) {
+        standaloneAwardsHtml = renderTableHtml(project.awards, 'awards-box', 'Selections & Awards');
+      }
+    }
+
+    // Card Header: Title only. Year is kept for filters but not shown next to the title.
+    let headerHtml = '';
+    if (projectTitle) {
+      const arrowBtnHtml = !isAlwaysExpanded && hasExpandableContent
+        ? `<button type="button" class="arrow-toggle-btn" aria-label="Toggle details">
+             <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <polyline points="6 9 12 15 18 9"></polyline>
+             </svg>
+           </button>`
+        : '';
+
+      headerHtml = `
+        <div class="card-header" ${!isAlwaysExpanded && hasExpandableContent ? 'role="button" tabindex="0"' : ''} aria-expanded="${isExpanded}">
+          <div class="card-title-group">
+            <div class="card-title">${escapeHtml(projectTitle)}</div>
+          </div>
+          ${arrowBtnHtml}
+        </div>
+      `;
+    }
+
+    card.innerHTML = `
+      ${mediaHtml}
+      ${headerHtml}
+      <div class="card-details">
+        <div class="card-details-inner">
+          ${descriptionHtml}
+          ${standaloneCreditsHtml}
+          ${standaloneAwardsHtml}
+        </div>
+      </div>
+    `;
+
+    // Dropdown toggle click handling (only for collapsible cards)
+    if (!isAlwaysExpanded && hasExpandableContent) {
+      const header = card.querySelector('.card-header');
+      if (header) {
+        function toggleAccordion(e) {
+          if (e.target.closest('a')) return;
+          const willExpand = !card.classList.contains('expanded');
+          card.classList.toggle('expanded', willExpand);
+          header.setAttribute('aria-expanded', willExpand);
+          if (willExpand) {
+            expandedProjects.add(projectKey);
+          } else {
+            expandedProjects.delete(projectKey);
+          }
+        }
+
+        header.addEventListener('click', toggleAccordion);
+        header.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleAccordion(e);
+          }
+        });
+      }
+    }
+
+    return card;
+  }
+
+  /**
+   * Render all projects into left-to-right Pinterest-style columns
+   */
+  function renderProjects() {
+    const projectList = getProjects();
+    if (!masonryContainer || !Array.isArray(projectList)) return;
+
+    // Filter projects by tag or year
+    const filtered = currentTag === 'all'
+      ? projectList
+      : projectList.filter(p => {
+          const matchYear = String(p.year).trim() === currentTag;
+          const matchTag = Array.isArray(p.tags) && p.tags.includes(currentTag);
+          return matchYear || matchTag;
+        });
+
+    masonryContainer.innerHTML = '';
+
+    if (filtered.length === 0) {
+      masonryContainer.innerHTML = `<div class="no-projects">No projects found for "${escapeHtml(currentTag)}".</div>`;
+      return;
+    }
+
+    const columnCount = getColumnCount();
+    currentColumnCount = columnCount;
+
+    // Create column containers
+    const columns = [];
+    for (let i = 0; i < columnCount; i++) {
+      const col = document.createElement('div');
+      col.className = 'masonry-column';
+      masonryContainer.appendChild(col);
+      columns.push(col);
+    }
+
+    // Distribute left-to-right (Round Robin: item 0 -> col 0, item 1 -> col 1, item 2 -> col 2, item 3 -> col 0, etc.)
+    filtered.forEach((project, idx) => {
+      const targetColumn = columns[idx % columnCount];
+      const card = createProjectCard(project, idx);
+      targetColumn.appendChild(card);
+    });
+  }
+
+  /**
+   * Setup Fullscreen Image Zoom:
+   * Edge-to-edge image, no loupe indicator, clicking anywhere zooms out
+   */
+  function setupImageZoom() {
+    let overlay = document.getElementById('zoom-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'zoom-overlay';
+      overlay.className = 'zoom-overlay';
+      overlay.setAttribute('aria-hidden', 'true');
+      overlay.innerHTML = `<img class="zoom-img" id="zoom-img" src="" alt="Fullscreen view" />`;
+      document.body.appendChild(overlay);
+    }
+
+    const zoomImg = overlay.querySelector('#zoom-img');
+
+    function openZoom(src, alt) {
+      zoomImg.src = src;
+      zoomImg.alt = alt || 'Fullscreen preview';
+      overlay.classList.add('active');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('zoom-locked');
+    }
+
+    function closeZoom() {
+      overlay.classList.remove('active');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('zoom-locked');
+      zoomImg.src = '';
+    }
+
+    // Delegated click on any description image or main card image
+    document.addEventListener('click', (e) => {
+      const img = e.target.closest('.card-description img, .card-main-image');
+      if (img) {
+        e.preventDefault();
+        e.stopPropagation();
+        openZoom(img.src, img.alt);
+      }
+    });
+
+    // Clicking anywhere in the overlay (including the image or edges) zooms out
+    overlay.addEventListener('click', closeZoom);
+
+    // Escape key zooms out
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.classList.contains('active')) {
+        closeZoom();
+      }
+    });
+  }
+
+  /**
+   * Window resize handler with debouncing to re-layout columns left-to-right when breakpoint changes
+   */
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      const newCount = getColumnCount();
+      if (newCount !== currentColumnCount) {
+        renderProjects();
+      }
+    }, 150);
+  });
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', () => {
+    renderFilterBar();
+    renderProjects();
+    setupImageZoom();
+  });
+})();

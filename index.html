@@ -1,239 +1,25 @@
-<!-- built with temper: https://temper.one -->
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sander Joon</title>
-
-
-  <link rel="stylesheet" type="text/css" href="https://static.getslideframe.com/slideFrame.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Emoji:wght@700&display=swap" rel="stylesheet">
-
-  <style type="text/css" style="display:block">
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-size: 100%;
-      font-weight: inherit;
-    }
-
-    b,
-    strong {
-      font-weight: bold;
-    }
-
-    body {
-      background: f5f4ec;
-      color: #a89a00;
-      width: 100%;
-    }
-
-    /* FONT FACE */
-    @font-face {
-      font-family: 'Routed Gothic';
-      src: url('fonts/routed-gothic.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
-
-    @font-face {
-      font-family: 'Routed Gothic';
-      src: url('fonts/routed-gothic-italic.ttf') format('truetype');
-      font-weight: normal;
-      font-style: italic;
-    }
-
-    @font-face {
-      font-family: 'Routed Gothic Half Italic';
-      src: url('fonts/routed-gothic-half-italic.ttf') format('truetype');
-      font-weight: normal;
-      font-style: italic;
-    }
-
-    @font-face {
-      font-family: 'Routed Gothic Narrow';
-      src: url('fonts/routed-gothic-narrow.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
-
-    @font-face {
-      font-family: 'Routed Gothic Narrow';
-      src: url('fonts/routed-gothic-narrow-italic.ttf') format('truetype');
-      font-weight: normal;
-      font-style: italic;
-    }
-
-    @font-face {
-      font-family: 'Routed Gothic Narrow Half Italic';
-      src: url('fonts/routed-gothic-narrow-half-italic.ttf') format('truetype');
-      font-weight: normal;
-      font-style: italic;
-    }
-
-    @font-face {
-      font-family: 'Routed Gothic Wide';
-      src: url('fonts/routed-gothic-wide.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
-
-    @font-face {
-      font-family: 'Routed Gothic Wide';
-      src: url('fonts/routed-gothic-wide-italic.ttf') format('truetype');
-      font-weight: normal;
-      font-style: italic;
-    }
-
-    @font-face {
-      font-family: 'Routed Gothic Wide Half Italic';
-      src: url('fonts/routed-gothic-wide-half-italic.ttf') format('truetype');
-      font-weight: normal;
-      font-style: italic;
-    }
-
-    /* PAGE */
-
-    .text {
-      font-family: 'Routed Gothic', sans-serif;
-      display: none;
-      opacity: 0;
-      font-size: 4.95vw;
-      line-height: 4.95vw;
-      letter-spacing: -0.05vw;
-      font-variant-ligatures: normal;
-      visibility: hidden;
-    }
-
-    .emoji {
-      font-family: 'Noto Emoji', sans-serif;
-      font-weight: 700;
-      -webkit-text-fill-color: currentcolor;
-    }
-
-    .wave {
-      display: inline-block;
-      animation: wave 1s infinite ease-in-out;
-      letter-spacing: -.5vw;
-    }
-
-    @keyframes wave {
-
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-
-      50% {
-        transform: translateY(-0.8vw);
-      }
-    }
-
-    h1 {
-      font: inherit;
-      line-height: inherit;
-      letter-spacing: inherit;
-    }
-
-    .text p,
-    h1 {
-      opacity: 0;
-      display: none;
-      visibility: hidden;
-      animation: fadein .2s forwards ease-out;
-      padding: 1.98vw 10vw 2.97vw 3vw;
-    }
-
-    .text a {
-      text-decoration: underline;
-      text-decoration-skip: ink;
-      color: inherit;
-      padding-left: .5vw;
-      padding-right: .5vw;
-      margin-left: -.5vw;
-      margin-right: -.5vw;
-      cursor: pointer;
-    }
-
-    .text a:hover {
-      text-decoration: none;
-    }
-
-    .text a:focus {
-      text-decoration: none;
-      outline: solid 4px rgba(0, 0, 0, .4);
-    }
-
-    ::selection {
-      background: #000;
-      background: rgba(0, 0, 0, .99);
-      color: #fff;
-    }
-
-    @keyframes fadein {
-      0% {
-        opacity: 0;
-        margin-top: 1.5vw;
-      }
-
-      100% {
-        opacity: 1;
-        margin-top: 0;
-      }
-    }
-  </style>
-
-  <!-- DON’T REMOVE THE FOLLOWING LINE! -->
-  <script
-    type="text/javascript">!function () { document.addEventListener("DOMContentLoaded", function () { var _0x1a2a = "temper.one", _0x35df = !1, _0x71b1 = document.scripts; for (var _0x4e3a = 0; _0x4e3a < _0x71b1.length; _0x4e3a++)_0x71b1[_0x4e3a].src.includes(_0x1a2a) && (_0x35df = !0); if (!_0x35df) { var _0x15c2 = document.querySelector(".text"); _0x15c2 && _0x15c2.remove() } }) }();</script>
-
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
+<body>
 
-<body style="display:none;">
-  <div class="text">
-    <h1 style="animation-delay: 0.1s;">Hei, I'm <span
-        style="font-family: 'Routed Gothic Wide'; font-weight: bold; letter-spacing: -0.4vw;">Sander Joon</span>, a film
-      director and
-      <span style="font-family: 'Routed Gothic Wide'; font-style: italic;">
-        <span class="wave" style="animation-delay: 0.0s">a</span><span class="wave"
-          style="animation-delay: 0.2s">n</span><span class="wave" style="animation-delay: 0.25s">i</span><span
-          class="wave" style="animation-delay: 0.3s">m</span><span class="wave"
-          style="animation-delay: 0.4s">a</span><span class="wave" style="animation-delay: 0.5s">t</span><span
-          class="wave" style="animation-delay: 0.6s">o</span><span class="wave" style="animation-delay: 0.7s">r</span>
-      </span>
-      based in Estonia.
-    </h1>
-    <p style="font-family: 'Routed Gothic'; animation-delay: 0.2s;">sander.joon@gmail.com <span
-        class="emoji">👋&#xFE0E;</span></p>
-    <p style="animation-delay: 0.3s; padding-bottom: 1vw;">My <a target="_blank"
-        href="https://press.oscars.org/news/95th-oscarsr-shortlists-10-award-categories-announced#:~:text=%E2%80%9CSave%20Ralph%E2%80%9D-,%E2%80%9CSierra%E2%80%9D,-%E2%80%9CSteakhouse%E2%80%9D"><i>Oscars-shortlisted</i></a>
-      animated short:</p>
-    <p style="animation-delay: 0.4s; padding-top: .5vw;">
-      <span style="display: block; padding:56.25% 0 0 0; position:relative; border-radius: 1vw; overflow: hidden;">
-        <iframe src="https://player.vimeo.com/video/1035359933?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
-          frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          style="position:absolute;top:0;left:0;width:100%;height:100%; border-radius: 1vw;" title="Sierra"></iframe>
-      </span>
-      <script src="https://player.vimeo.com/api/player.js"></script>
-    </p>
-    <p style="animation-delay: 0.5s;"><a target="_blank" href="https://sanderjoon.cargo.site/">Portfolio</a>, <a
-        target="_blank" href="https://www.instagram.com/sanderjoon/">Instagram</a>, <a target="_blank"
-        href="https://docs.google.com/document/d/1Hi_yvdrPqwd7v-gbUWIhDkpgFimJlm9dMqAGZVh70uQ/edit?usp=sharing">CV</a>
-    </p>
-    <p style="animation-delay: 0.6s; text-align: right;"><span class="wave"><span class="emoji">🙆&#xFE0E;</span></span>
-    </p>
-  </div>
+  <header class="site-header">
+    <nav class="filter-bar" id="filter-bar" aria-label="Project categories and tags">
+      <!-- Tag buttons generated dynamically by app.js with "Sander Joon" as the All button -->
+    </nav>
+  </header>
 
-  <!-- DON’T REMOVE THE FOLLOWING LINES! -->
-  <script type="text/javascript">const fs = 4.95;</script>
-  <script type="text/javascript" src="https://temper.one/temper-2411.js"></script>
-  <script type="text/javascript" src="https://static.getslideframe.com/slideFrame.min.js"></script>
+  <main class="masonry-container" id="masonry-container" aria-live="polite">
+    <!-- Projects arranged left-to-right in Pinterest-style columns -->
+  </main>
 
+  <!-- Project Database & Logic -->
+  <script src="projects.js?v=8"></script>
+  <script src="app.js?v=8"></script>
 </body>
-
 </html>
