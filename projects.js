@@ -62,7 +62,7 @@ const projects = window.projects = [
       </table-box>
     `
   },
-    {
+  {
     title: "Sounds Good",
     year: "...-2018",
     videoUrl: "https://www.youtube.com/embed/iUZXn3ibEEM",
@@ -70,7 +70,28 @@ const projects = window.projects = [
     tags: ["Films"],
     description: `
       <p>Boom operator is trying to record the sound of mushrooms.</p>
-
     `
   },
+  {
+    title: "Moulinet",
+    year: "...-2018",
+    videoUrl: "https://www.youtube.com/watch?v=z5KUJnEhqwE",
+    aspectRatio: "2.35/1",
+    tags: ["Films"],
+    description: `
+    <p>There are some things we understand just naturally, and again some that we can't understand no matter how hard we try.</p>
+    `
+  },
+    {
+  title: "Velodrool",
+    year: "...-2018",
+    videoUrl: "https://www.youtube.com/watch?v=mPMnFKDFp0E",
+    aspectRatio: "16/9",
+    tags: ["Films"],
+    description: `
+      <p>An addicted biker runs out of cigarettes. He joins a race to get more, but has to take help from some peculiar people in the audience to stay in the competition.</p>
+      <p><b>Making of Velodrool:</b></p>
+      <iframe src="https://www.youtube.com/embed/QqkXo8MnPas"></iframe>
+    `
+  }
   ];
