@@ -7,6 +7,7 @@
  * - title (string): Project title (optional for text boxes)
  * - year (string/number, optional): Year produced (automatically appears in top filter tags)
  * - videoUrl (string, optional): Any YouTube, Vimeo, or direct .mp4 link (e.g. "video.mp4" or web URL)
+ * - thumbnailUrl (string, optional): Image shown before a video starts; clicking it starts playback
  * - imageUrl (string, optional): Image path or URL instead of video (e.g. "still.jpg")
  * - aspectRatio (string, optional): Media aspect ratio, e.g. "16/9" (default), "4/3", "1/1", "9/16", "2.39/1"
  * - tags (array of strings): Filter tags (e.g. ["Animation", "Short Film"])
@@ -29,21 +30,24 @@
 
 const projects = window.projects = [
   {
-    title: "",
+    title: "Info",
     description: `
       <p>Hei! I'm Sander Joon, a film director and animator based in Estonia.</p>
       <p><a href="mailto:sander.joon@gmail.com">sander.joon@gmail.com</a></p>
       <p><a href="https://www.instagram.com/sanderjoon/">@sanderjoon</a></p>
+      <p><a href="https://docs.google.com/document/d/1Hi_yvdrPqwd7v-gbUWIhDkpgFimJlm9dMqAGZVh70uQ/edit?usp=sharing">CV</a></p>
     `
   },
   {
-    title: "Sierra",
+    title: "Sierra 🚗💨💨💨",
     year: "2022",
     videoUrl: "https://vimeo.com/1035359933",
+    thumbnailUrl: "thumbs/sierra.mp4",
     aspectRatio: "16/9",
     tags: ["Films"],
     description: `
-      <p>Parents often push their children to follow their steps. In this case, the father's obsession with rally turns the kid into a car tire. Loosely inspired by the director's childhood, Sierra takes us into the surreal car racing world.</p>
+    <p>is an <b>Oscars Shortlisted</b> short animation</p>
+    <p>Parents often push their children to follow their steps. In this case, the father's obsession with rally turns the kid into a car tire. Loosely inspired by the director's childhood, Sierra takes us into the surreal car racing world.</p>
 
       <table-box title="Credits">
         Author: Sander Joon
@@ -66,6 +70,7 @@ const projects = window.projects = [
     title: "Sounds Good",
     year: "...-2018",
     videoUrl: "https://www.youtube.com/embed/iUZXn3ibEEM",
+    thumbnailUrl: "thumbs/soundsgood.mp4",
     aspectRatio: "16/9",
     tags: ["Films"],
     description: `
@@ -86,6 +91,7 @@ const projects = window.projects = [
   title: "Velodrool",
     year: "...-2018",
     videoUrl: "https://www.youtube.com/watch?v=mPMnFKDFp0E",
+    thumbnailUrl: "thumbs/velodrool.mp4",
     aspectRatio: "16/9",
     tags: ["Films"],
     description: `

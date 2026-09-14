@@ -39,6 +39,10 @@
     return url;
   }
 
+  function addAutoplay(url) {
+    return `${url}${url.includes('?') ? '&' : '?'}autoplay=1`;
+  }
+
   /**
    * Parse two-column table data (credits, awards, or custom specs)
    * Supports:
@@ -302,31 +306,32 @@
     // Media Slot: Video (MP4/Vimeo/YouTube) OR Image OR None (pure text box)
     let mediaHtml = '';
     if (project.videoUrl) {
+      const hasThumbnail = Boolean(project.thumbnailUrl);
+      const thumbnailIsMp4 = isMp4Url(project.thumbnailUrl);
+      const hoverVideoUrl = project.hoverVideoUrl || (thumbnailIsMp4 ? project.thumbnailUrl : '') || (isMp4Url(project.videoUrl) ? project.videoUrl : '');
+      const thumbnailMediaHtml = thumbnailIsMp4
+        ? `<video class="video-hover-preview" src="${escapeHtml(project.thumbnailUrl)}" muted loop playsinline preload="metadata" aria-hidden="true"></video>`
+        : `<img src="${escapeHtml(project.thumbnailUrl)}" alt="" loading="lazy">`;
+      const thumbnailHtml = hasThumbnail
+        ? `<button type="button" class="video-thumbnail-trigger ${thumbnailIsMp4 ? 'mp4-thumbnail' : ''}" aria-label="Play ${escapeHtml(projectTitle || 'video')}" data-video-url="${escapeHtml(project.videoUrl)}">
+             ${thumbnailMediaHtml}
+             ${!thumbnailIsMp4 && isMp4Url(hoverVideoUrl) ? `<video class="video-hover-preview" src="${escapeHtml(hoverVideoUrl)}" muted loop playsinline preload="metadata" aria-hidden="true"></video>` : ''}
+             <span class="video-play-icon" aria-hidden="true">&#9654;</span>
+           </button>`
+        : '';
+
       if (isMp4Url(project.videoUrl)) {
         mediaHtml = `
-          <div class="video-wrapper" ${customStyleAttr}>
-            <video 
-              src="${escapeHtml(project.videoUrl)}" 
-              controls 
-              playsinline 
-              preload="metadata"
-              title="${escapeHtml(projectTitle)}">
-              Your browser does not support the video tag.
-            </video>
+          <div class="video-wrapper ${hasThumbnail ? 'has-thumbnail' : ''}" ${customStyleAttr}>
+            ${hasThumbnail ? thumbnailHtml : `<video src="${escapeHtml(project.videoUrl)}" controls playsinline preload="metadata" title="${escapeHtml(projectTitle)}">Your browser does not support the video tag.</video>`}
           </div>
         `;
       } else {
         const embedUrl = getEmbedUrl(project.videoUrl);
         if (embedUrl) {
           mediaHtml = `
-            <div class="video-wrapper" ${customStyleAttr}>
-              <iframe 
-                src="${embedUrl}" 
-                title="${escapeHtml(projectTitle)}" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                allowfullscreen 
-                loading="lazy">
-              </iframe>
+            <div class="video-wrapper ${hasThumbnail ? 'has-thumbnail' : ''}" ${customStyleAttr}>
+              ${hasThumbnail ? thumbnailHtml : `<iframe src="${embedUrl}" title="${escapeHtml(projectTitle)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>`}
             </div>
           `;
         }
@@ -396,6 +401,36 @@
         </div>
       </div>
     `;
+
+    const thumbnailTrigger = card.querySelector('.video-thumbnail-trigger');
+    if (thumbnailTrigger) {
+      const hoverPreview = thumbnailTrigger.querySelector('.video-hover-preview');
+      if (hoverPreview) {
+        thumbnailTrigger.addEventListener('mouseenter', () => {
+          thumbnailTrigger.classList.remove('preview-paused');
+          hoverPreview.play().catch(() => {});
+        });
+        thumbnailTrigger.addEventListener('mouseleave', () => {
+          hoverPreview.pause();
+          thumbnailTrigger.classList.add('preview-paused');
+        });
+      }
+
+      thumbnailTrigger.addEventListener('click', () => {
+        const videoUrl = thumbnailTrigger.dataset.videoUrl;
+        const videoWrapper = thumbnailTrigger.closest('.video-wrapper');
+
+        if (!videoWrapper) return;
+        if (isMp4Url(videoUrl)) {
+          videoWrapper.innerHTML = `<video src="${escapeHtml(videoUrl)}" controls autoplay playsinline preload="metadata" title="${escapeHtml(projectTitle)}">Your browser does not support the video tag.</video>`;
+          videoWrapper.querySelector('video')?.focus();
+          return;
+        }
+
+        const embedUrl = getEmbedUrl(videoUrl);
+        videoWrapper.innerHTML = `<iframe src="${escapeHtml(addAutoplay(embedUrl))}" title="${escapeHtml(projectTitle)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+      });
+    }
 
     // Dropdown toggle click handling (only for collapsible cards)
     if (!isAlwaysExpanded && hasExpandableContent) {
