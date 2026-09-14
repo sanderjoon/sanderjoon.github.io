@@ -51,15 +51,14 @@ const projects = window.projects = [
         Sound: Matis Rei
         Music: Misha Panfilov
         Animation: Sander Joon, Henri Veermäe, Valya Paneva, Teresa Baroet
+        Year: 2022
       </table-box>
 
-      <p>Premiered at Clermont-Ferrand, won San Francisco IFF, Ottawa IAF, and was shortlisted for the 95th Academy Awards.</p>
-
       <table-box title="Selections & Awards">
+        Premiered: Clermont-Ferrand Short Film Festival
         Shortlisted: 95th Academy Awards
         Best Animation: San Francisco International Film Festival
-        Grand Prize: Ottawa International Animation Festival
-        Audience Award: Clermont-Ferrand Short Film Festival
+        Public Prize: Ottawa International Animation Festival
       </table-box>
     `
   },
