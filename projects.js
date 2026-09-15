@@ -73,7 +73,7 @@ const projects = window.projects = [
   },
   {
     title: "Sounds Good",
-    year: "...-2018",
+    year: "2018",
     videoUrl: "https://www.youtube.com/embed/iUZXn3ibEEM",
     thumbnailUrl: "thumbs/soundsgood.mp4",
     aspectRatio: "16/9",
@@ -84,8 +84,9 @@ const projects = window.projects = [
   },
   {
     title: "Moulinet",
-    year: "...-2018",
+    year: "2017",
     videoUrl: "https://www.youtube.com/watch?v=z5KUJnEhqwE",
+    thumbnailUrl: "https://i3.ytimg.com/vi/z5KUJnEhqwE/maxresdefault.jpg",
     aspectRatio: "2.35/1",
     tags: ["Films"],
     description: `
@@ -94,7 +95,7 @@ const projects = window.projects = [
   },
   {
   title: "Velodrool",
-    year: "...-2018",
+    year: "2015",
     videoUrl: "https://www.youtube.com/watch?v=mPMnFKDFp0E",
     thumbnailUrl: "thumbs/velodrool.mp4",
     aspectRatio: "16/9",
@@ -117,5 +118,17 @@ const projects = window.projects = [
       <video style="aspect-ratio: 1 / 1;" controls loop><source src="https://freight.cargo.site/m/F1739989098246556470814740381571/021_Open_1.mp4" type="video/mp4"></video>
       <video style="aspect-ratio: 1 / 1;" controls loop><source src="https://freight.cargo.site/m/V1739989098117429262298773520259/015_Helmet_1.mp4" type="video/mp4"></video>
     `
+  },
+      {
+  title: "Anibar 2023",
+    year: "2023",
+    videoUrl: "https://www.youtube.com/watch?v=XE0mG5kOy3A",
+    thumbnailUrl: "https://i3.ytimg.com/vi/XE0mG5kOy3A/maxresdefault.jpg",
+    aspectRatio: "16/9",
+    tags: ["Work"],
+    description: `
+      <video style="aspect-ratio: auto;" controls loop><source src="https://freight.cargo.site/m/U1644734105736033001051027703416/Recording-2023-06-05-160433.mp4" type="video/mp4"></video>
+    `
   }
+
   ];
