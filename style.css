@@ -29,7 +29,7 @@
 
 html, body, button, input, select, textarea, table, td, th {
   font-family: var(--font-main);
-  font-feature-settings: "ss02", "ss03", "ss06", "ss11";
+  font-feature-settings: "ss02", "ss06", "ss11";
   font-size: var(--font-size);
   font-variation-settings: "mono" 100;
 }
@@ -192,7 +192,7 @@ body.zoom-locked {
 
 .video-thumbnail-trigger:hover .video-play-icon,
 .video-thumbnail-trigger:focus-visible .video-play-icon {
-  opacity: 1;
+  opacity: 0;
   background: #ffffff;
   transform: translate(-50%, -50%) scale(1.08);
 }
@@ -404,7 +404,7 @@ body.zoom-locked {
 }
 
 .credits-table tr {
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid #656565;
 }
 
 .credits-table tr:last-child {
