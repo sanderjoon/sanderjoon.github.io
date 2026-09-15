@@ -64,10 +64,10 @@ body.zoom-locked {
   font-size: var(--font-size);
   font-weight: 450;
   padding: 6px 14px;
-  border-radius: 999px;
-  border: none;
-  background: var(--tag-bg);
-  color: var(--tag-text-color);
+  border-radius: 50%;
+  border: 1px solid #000000;
+  background: transparent;
+  color: #000000;
   cursor: pointer;
   user-select: none;
 }
@@ -75,6 +75,7 @@ body.zoom-locked {
 .tag-btn.active {
   background: var(--tag-active-bg);
   color: var(--tag-active-text);
+  border-color: transparent;
 }
 
 /* Pinterest Masonry Container */
@@ -279,8 +280,8 @@ body.zoom-locked {
 .arrow-toggle-btn {
   width: 28px;
   height: 28px;
-  background: var(--tag-bg);
-  border: none;
+  background: transparent;
+  border: 1px solid #000000;
   padding: 0;
   cursor: pointer;
   display: flex;
@@ -308,6 +309,7 @@ body.zoom-locked {
 .project-card.expanded .arrow-toggle-btn {
   background: var(--tag-active-bg);
   color: var(--tag-active-text);
+  border-color: transparent;
 }
 
 /* Expandable Details Section: instant toggle, NO transitions, NO borders */

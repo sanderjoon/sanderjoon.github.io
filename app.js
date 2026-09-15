@@ -6,6 +6,8 @@
   'use strict';
 
   let currentTag = 'all';
+  let orderMode = 'shuffled';
+  let shuffledProjects = null;
   const expandedProjects = new Set();
   let currentColumnCount = 0;
 
@@ -178,6 +180,75 @@
     return /^\d{4}$/.test(String(str).trim());
   }
 
+  function getYearRange(value) {
+    const year = String(value || '').trim();
+    if (/^\d{4}$/.test(year)) {
+      const numericYear = Number(year);
+      return { min: numericYear, max: numericYear };
+    }
+    if (/^\.\.\.-\d{4}$/.test(year)) {
+      return { min: -Infinity, max: Number(year.slice(-4)) };
+    }
+    if (/^\d{4}-\.\.\.$/.test(year)) {
+      return { min: Number(year.slice(0, 4)), max: Infinity };
+    }
+    return null;
+  }
+
+  function getOrderLabel() {
+    return {
+      shuffled: 'Shuffled',
+      curated: 'Curated',
+      time: 'By Time',
+      name: 'By Name'
+    }[orderMode];
+  }
+
+  function shuffle(items) {
+    const shuffled = [...items];
+    for (let index = shuffled.length - 1; index > 0; index--) {
+      const swapIndex = Math.floor(Math.random() * (index + 1));
+      [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+    }
+    return shuffled;
+  }
+
+  function orderProjects(projectList) {
+    const pinnedProjects = projectList.filter(project => project.pinned === true);
+    const unpinnedProjects = projectList.filter(project => project.pinned !== true);
+    let ordered;
+    if (orderMode === 'curated') {
+      ordered = [...unpinnedProjects];
+    } else if (orderMode === 'time') {
+      ordered = [...unpinnedProjects].sort((a, b) => {
+        const aRange = getYearRange(a.year);
+        const bRange = getYearRange(b.year);
+        const aYear = aRange ? aRange.max : -Infinity;
+        const bYear = bRange ? bRange.max : -Infinity;
+        return bYear - aYear;
+      });
+    } else if (orderMode === 'name') {
+      ordered = [...unpinnedProjects].sort((a, b) => {
+        const aTitle = getProjectTitle(a).toLocaleLowerCase();
+        const bTitle = getProjectTitle(b).toLocaleLowerCase();
+        if (!aTitle && !bTitle) return 0;
+        if (!aTitle) return 1;
+        if (!bTitle) return -1;
+        return aTitle.localeCompare(bTitle);
+      });
+    } else {
+      if (!shuffledProjects || shuffledProjects.length !== unpinnedProjects.length) {
+        shuffledProjects = shuffle(unpinnedProjects);
+      }
+      ordered = shuffledProjects.filter(project => unpinnedProjects.includes(project));
+    }
+
+    return [
+      ...pinnedProjects,
+      ...ordered
+    ];
+  }
+
   /**
    * Render Tag Filter Buttons on Top Row
    * Order: "Sander Joon" (All) -> Category tags -> Years as last tags
@@ -241,16 +312,30 @@
       filterBar.appendChild(btn);
     });
 
-    // 3. Year tags as last tags
-    yearTags.forEach(year => {
+    // 3. Year ranges as last tags
+    ['2020-...', '...-2019'].forEach(yearRange => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = `tag-btn ${currentTag === year ? 'active' : ''}`;
-      btn.textContent = year;
-      btn.setAttribute('data-tag', year);
-      btn.addEventListener('click', () => setTagFilter(year));
+      btn.className = `tag-btn ${currentTag === yearRange ? 'active' : ''}`;
+      btn.textContent = yearRange;
+      btn.setAttribute('data-tag', yearRange);
+      btn.addEventListener('click', () => setTagFilter(yearRange));
       filterBar.appendChild(btn);
     });
+
+    const orderBtn = document.createElement('button');
+    orderBtn.type = 'button';
+    orderBtn.className = 'tag-btn';
+    orderBtn.textContent = getOrderLabel();
+    orderBtn.setAttribute('aria-label', `Change order, currently ${getOrderLabel()}`);
+    orderBtn.addEventListener('click', () => {
+      const modes = ['shuffled', 'curated', 'time', 'name'];
+      orderMode = modes[(modes.indexOf(orderMode) + 1) % modes.length];
+      if (orderMode === 'shuffled') shuffledProjects = shuffle(projectList);
+      renderFilterBar();
+      renderProjects();
+    });
+    filterBar.appendChild(orderBtn);
   }
 
   /**
@@ -324,12 +409,12 @@
       const thumbnailIsMp4 = isMp4Url(project.thumbnailUrl);
       const hoverVideoUrl = project.hoverVideoUrl || (thumbnailIsMp4 ? project.thumbnailUrl : '') || (isMp4Url(project.videoUrl) ? project.videoUrl : '');
       const thumbnailMediaHtml = thumbnailIsMp4
-        ? `<video class="video-hover-preview" src="${escapeHtml(project.thumbnailUrl)}" muted loop playsinline preload="none" aria-hidden="true"></video>`
+        ? `<video class="video-hover-preview" src="${escapeHtml(project.thumbnailUrl)}" muted loop playsinline preload="auto" aria-hidden="true"></video>`
         : `<img src="${escapeHtml(project.thumbnailUrl)}" alt="" loading="lazy">`;
       const thumbnailHtml = hasThumbnail
         ? `<button type="button" class="video-thumbnail-trigger ${thumbnailIsMp4 ? 'mp4-thumbnail' : ''}" aria-label="Play ${escapeHtml(projectTitle || 'video')}" data-video-url="${escapeHtml(project.videoUrl)}">
              ${thumbnailMediaHtml}
-             ${!thumbnailIsMp4 && isMp4Url(hoverVideoUrl) ? `<video class="video-hover-preview" src="${escapeHtml(hoverVideoUrl)}" muted loop playsinline preload="none" aria-hidden="true"></video>` : ''}
+             ${!thumbnailIsMp4 && isMp4Url(hoverVideoUrl) ? `<video class="video-hover-preview" src="${escapeHtml(hoverVideoUrl)}" muted loop playsinline preload="auto" aria-hidden="true"></video>` : ''}
              <span class="video-play-icon" aria-hidden="true">&#9654;</span>
            </button>`
         : '';
@@ -439,9 +524,8 @@
 
         if (previewObserver) {
           previewObserver.observe(hoverPreview);
-        } else {
-          loadPreview();
         }
+        loadPreview();
 
         thumbnailTrigger.addEventListener('mouseenter', () => {
           loadPreview();
@@ -507,13 +591,18 @@
     if (!masonryContainer || !Array.isArray(projectList)) return;
 
     // Filter projects by tag or year
-    const filtered = currentTag === 'all'
+    const filtered = orderProjects(currentTag === 'all'
       ? projectList
       : projectList.filter(p => {
-          const matchYear = String(p.year).trim() === currentTag;
+          const yearRange = getYearRange(p.year);
+          const matchYear = currentTag === '2020-...'
+            ? yearRange && yearRange.min >= 2020
+            : currentTag === '...-2019'
+              ? yearRange && yearRange.max <= 2019
+              : String(p.year).trim() === currentTag;
           const matchTag = Array.isArray(p.tags) && p.tags.includes(currentTag);
           return matchYear || matchTag;
-        });
+        }));
 
     masonryContainer.innerHTML = '';
 
