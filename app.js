@@ -601,7 +601,7 @@
 
         if (!videoWrapper) return;
         if (isMp4Url(videoUrl)) {
-          videoWrapper.innerHTML = `<video src="${escapeHtml(videoUrl)}" controls autoplay playsinline preload="metadata" title="${escapeHtml(projectTitle)}">Your browser does not support the video tag.</video>`;
+          videoWrapper.innerHTML = `<video class="embedded-mp4-video" src="${escapeHtml(videoUrl)}" controls autoplay playsinline webkit-playsinline preload="metadata" title="${escapeHtml(projectTitle)}">Your browser does not support the video tag.</video>`;
           videoWrapper.querySelector('video')?.focus();
           return;
         }
