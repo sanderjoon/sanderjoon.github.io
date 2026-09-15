@@ -45,6 +45,7 @@ const projects = window.projects = [
   {
     title: "📌 Sierra 🚗💨💨💨",
     pinned: true,
+    autoplayThumbnail: true,
     doubleWidth: true,
     year: "2022",
     videoUrl: "https://vimeo.com/1035359933",
