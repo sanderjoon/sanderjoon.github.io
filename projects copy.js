@@ -7,6 +7,7 @@
  * - title (string): Project title (optional for text boxes)
  * - year (string/number, optional): Year produced (automatically appears in top filter tags)
  * - pinned (boolean, optional): Set to true to keep the project first in every order mode
+ * - doubleWidth (boolean, optional): Set to true to make the project span two grid spaces
  * - videoUrl (string, optional): Any YouTube, Vimeo, or direct .mp4 link (e.g. "video.mp4" or web URL)
  * - thumbnailUrl (string, optional): Image or MP4 shown before a video starts
  * - hoverVideoUrl (string, optional): Direct .mp4 preview played while hovering the thumbnail

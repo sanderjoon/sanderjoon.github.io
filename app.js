@@ -8,6 +8,7 @@
   let currentTag = 'all';
   let orderMode = 'shuffled';
   let shuffledProjects = null;
+  let masonryResizeObserver = null;
   const expandedProjects = new Set();
   let currentColumnCount = 0;
 
@@ -355,6 +356,44 @@
     renderProjects();
   }
 
+  function layoutMasonry(cards, columnCount) {
+    if (!cards.length) return;
+
+    const containerStyle = getComputedStyle(masonryContainer);
+    const gap = Number.parseFloat(containerStyle.gap) || 24;
+    const columnWidth = (masonryContainer.clientWidth - gap * (columnCount - 1)) / columnCount;
+    const columnHeights = Array(columnCount).fill(0);
+
+    cards.forEach((card, index) => {
+      const span = card.dataset.doubleWidth === 'true' && columnCount > 1 ? 2 : 1;
+      const preferredColumn = Math.min(index % columnCount, columnCount - span);
+      let startColumn = preferredColumn;
+      let top = Infinity;
+
+      for (let candidate = 0; candidate <= columnCount - span; candidate++) {
+        const candidateTop = Math.max(...columnHeights.slice(candidate, candidate + span));
+        const isBetterPosition = candidateTop < top;
+        const isEqualAndCloser = candidateTop === top
+          && Math.abs(candidate - preferredColumn) < Math.abs(startColumn - preferredColumn);
+        if (isBetterPosition || isEqualAndCloser) {
+          startColumn = candidate;
+          top = candidateTop;
+        }
+      }
+
+      card.style.width = `${columnWidth * span + gap * (span - 1)}px`;
+      card.style.left = `${startColumn * (columnWidth + gap)}px`;
+      card.style.top = `${top}px`;
+
+      const bottom = top + card.offsetHeight;
+      for (let column = startColumn; column < startColumn + span; column++) {
+        columnHeights[column] = bottom + gap;
+      }
+    });
+
+    masonryContainer.style.height = `${Math.max(...columnHeights) - gap}px`;
+  }
+
   /**
    * Helper to escape HTML attributes & text
    */
@@ -604,6 +643,7 @@
           return matchYear || matchTag;
         }));
 
+    if (masonryResizeObserver) masonryResizeObserver.disconnect();
     masonryContainer.innerHTML = '';
 
     if (filtered.length === 0) {
@@ -614,21 +654,21 @@
     const columnCount = getColumnCount();
     currentColumnCount = columnCount;
 
-    // Create column containers
-    const columns = [];
-    for (let i = 0; i < columnCount; i++) {
-      const col = document.createElement('div');
-      col.className = 'masonry-column';
-      masonryContainer.appendChild(col);
-      columns.push(col);
-    }
-
-    // Distribute left-to-right (Round Robin: item 0 -> col 0, item 1 -> col 1, item 2 -> col 2, item 3 -> col 0, etc.)
+    const cards = [];
     filtered.forEach((project, idx) => {
-      const targetColumn = columns[idx % columnCount];
       const card = createProjectCard(project, idx);
-      targetColumn.appendChild(card);
+      card.dataset.doubleWidth = project.doubleWidth === true ? 'true' : 'false';
+      masonryContainer.appendChild(card);
+      cards.push(card);
     });
+
+    layoutMasonry(cards, columnCount);
+    if ('ResizeObserver' in window) {
+      masonryResizeObserver = new ResizeObserver(() => {
+        layoutMasonry(cards, getColumnCount());
+      });
+      cards.forEach(card => masonryResizeObserver.observe(card));
+    }
   }
 
   /**
@@ -691,10 +731,7 @@
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
-      const newCount = getColumnCount();
-      if (newCount !== currentColumnCount) {
-        renderProjects();
-      }
+      renderProjects();
     }, 150);
   });
 

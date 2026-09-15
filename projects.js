@@ -7,6 +7,7 @@
  * - title (string): Project title (optional for text boxes)
  * - year (string/number, optional): Year produced (automatically appears in top filter tags)
  * - pinned (boolean, optional): Set to true to keep the project first in every order mode
+ * - doubleWidth (boolean, optional): Set to true to make the project span two grid spaces
  * - videoUrl (string, optional): Any YouTube, Vimeo, or direct .mp4 link (e.g. "video.mp4" or web URL)
  * - thumbnailUrl (string, optional): Image shown before a video starts; clicking it starts playback
  * - imageUrl (string, optional): Image path or URL instead of video (e.g. "still.jpg")
@@ -34,15 +35,16 @@ const projects = window.projects = [
     title: "",
     pinned: true,
     description: `
-      <p>Hei! I'm Sander Joon, a film director and animator based in Estonia. Get in touch!</p>
+      <p>📌 Hei! I'm Sander Joon, a film director and animator based in Estonia. Get in touch!</p>
       <p><a href="mailto:sander.joon@gmail.com">sander.joon@gmail.com</a></p>
       <p><a href="https://www.instagram.com/sanderjoon/">@sanderjoon</a></p>
       <p><a href="https://docs.google.com/document/d/1Hi_yvdrPqwd7v-gbUWIhDkpgFimJlm9dMqAGZVh70uQ/edit?usp=sharing">CV</a></p>
     `
   },
   {
-    title: "Sierra 🚗💨💨💨",
+    title: "📌 Sierra 🚗💨💨💨",
     pinned: true,
+    doubleWidth: true,
     year: "2022",
     videoUrl: "https://vimeo.com/1035359933",
     thumbnailUrl: "thumbs/sierra.mp4",

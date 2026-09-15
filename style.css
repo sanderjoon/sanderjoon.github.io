@@ -82,9 +82,7 @@ body.zoom-locked {
 .masonry-container {
   max-width: 1440px;
   margin: 20px auto 0;
-  display: flex;
-  gap: var(--gap);
-  align-items: flex-start;
+  position: relative;
 }
 
 .masonry-column {
@@ -100,7 +98,11 @@ body.zoom-locked {
   background: transparent;
   border: none;
   overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
+
 
 /* Rounded Video Embed Container (16:9) */
 .video-wrapper {
