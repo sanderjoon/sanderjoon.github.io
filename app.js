@@ -13,6 +13,20 @@
   const filterBar = document.getElementById('filter-bar');
   const masonryContainer = document.getElementById('masonry-container');
 
+  // Load MP4 hover previews only when they are near the viewport.
+  const previewObserver = 'IntersectionObserver' in window
+    ? new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const preview = entry.target;
+          preview.dataset.previewLoaded = 'true';
+          preview.preload = 'auto';
+          preview.load();
+          previewObserver.unobserve(preview);
+        });
+      }, { rootMargin: '300px 0px' })
+    : null;
+
   /**
    * Check if URL is an MP4 video file
    */
@@ -310,12 +324,12 @@
       const thumbnailIsMp4 = isMp4Url(project.thumbnailUrl);
       const hoverVideoUrl = project.hoverVideoUrl || (thumbnailIsMp4 ? project.thumbnailUrl : '') || (isMp4Url(project.videoUrl) ? project.videoUrl : '');
       const thumbnailMediaHtml = thumbnailIsMp4
-        ? `<video class="video-hover-preview" src="${escapeHtml(project.thumbnailUrl)}" muted loop playsinline preload="metadata" aria-hidden="true"></video>`
+        ? `<video class="video-hover-preview" src="${escapeHtml(project.thumbnailUrl)}" muted loop playsinline preload="none" aria-hidden="true"></video>`
         : `<img src="${escapeHtml(project.thumbnailUrl)}" alt="" loading="lazy">`;
       const thumbnailHtml = hasThumbnail
         ? `<button type="button" class="video-thumbnail-trigger ${thumbnailIsMp4 ? 'mp4-thumbnail' : ''}" aria-label="Play ${escapeHtml(projectTitle || 'video')}" data-video-url="${escapeHtml(project.videoUrl)}">
              ${thumbnailMediaHtml}
-             ${!thumbnailIsMp4 && isMp4Url(hoverVideoUrl) ? `<video class="video-hover-preview" src="${escapeHtml(hoverVideoUrl)}" muted loop playsinline preload="metadata" aria-hidden="true"></video>` : ''}
+             ${!thumbnailIsMp4 && isMp4Url(hoverVideoUrl) ? `<video class="video-hover-preview" src="${escapeHtml(hoverVideoUrl)}" muted loop playsinline preload="none" aria-hidden="true"></video>` : ''}
              <span class="video-play-icon" aria-hidden="true">&#9654;</span>
            </button>`
         : '';
@@ -406,7 +420,16 @@
     if (thumbnailTrigger) {
       const hoverPreview = thumbnailTrigger.querySelector('.video-hover-preview');
       if (hoverPreview) {
-        hoverPreview.preload = 'auto';
+        let previewLoaded = false;
+        const loadPreview = () => {
+          if (previewLoaded || hoverPreview.dataset.previewLoaded === 'true') return;
+          previewLoaded = true;
+          hoverPreview.dataset.previewLoaded = 'true';
+          hoverPreview.preload = 'auto';
+          hoverPreview.load();
+          if (previewObserver) previewObserver.unobserve(hoverPreview);
+        };
+
         hoverPreview.addEventListener('loadedmetadata', () => {
           if (hoverPreview.duration > 0) {
             hoverPreview.currentTime = Math.min(0.05, hoverPreview.duration / 2);
@@ -415,9 +438,15 @@
         hoverPreview.addEventListener('loadeddata', () => {
           thumbnailTrigger.classList.add('preview-ready');
         }, { once: true });
-        hoverPreview.load();
+
+        if (previewObserver) {
+          previewObserver.observe(hoverPreview);
+        } else {
+          loadPreview();
+        }
 
         thumbnailTrigger.addEventListener('mouseenter', () => {
+          loadPreview();
           thumbnailTrigger.classList.remove('preview-paused');
           hoverPreview.play().catch(() => {});
         });
