@@ -112,7 +112,6 @@ body.zoom-locked {
   background-color: #000000;
   overflow: hidden;
   border-radius: var(--radius-video);
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
 .video-wrapper iframe,
@@ -126,14 +125,6 @@ body.zoom-locked {
   border-radius: var(--radius-video);
   object-fit: contain;
   background-color: #000000;
-}
-
-.video-wrapper video:fullscreen,
-.video-wrapper video:-webkit-full-screen {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  background: #000000;
 }
 
 .video-thumbnail-trigger {

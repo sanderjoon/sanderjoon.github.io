@@ -60,6 +60,14 @@
     return `${url}${url.includes('?') ? '&' : '?'}autoplay=1`;
   }
 
+  function isVideoFullscreen() {
+    return Boolean(
+      document.fullscreenElement
+      || document.webkitFullscreenElement
+      || document.querySelector('video[webkit-playsinline]')?.webkitDisplayingFullscreen
+    );
+  }
+
   /**
    * Parse two-column table data (credits, awards, or custom specs)
    * Supports:
@@ -478,7 +486,7 @@
         if (embedUrl) {
           mediaHtml = `
             <div class="video-wrapper ${hasThumbnail ? 'has-thumbnail' : ''}" ${customStyleAttr}>
-              ${hasThumbnail ? thumbnailHtml : `<iframe src="${embedUrl}" title="${escapeHtml(projectTitle)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>`}
+              ${hasThumbnail ? thumbnailHtml : `<iframe src="${embedUrl}" title="${escapeHtml(projectTitle)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen loading="lazy"></iframe>`}
             </div>
           `;
         }
@@ -601,13 +609,13 @@
 
         if (!videoWrapper) return;
         if (isMp4Url(videoUrl)) {
-          videoWrapper.innerHTML = `<video class="embedded-mp4-video" src="${escapeHtml(videoUrl)}" controls autoplay playsinline webkit-playsinline preload="metadata" title="${escapeHtml(projectTitle)}">Your browser does not support the video tag.</video>`;
+          videoWrapper.innerHTML = `<video class="embedded-mp4-video" src="${escapeHtml(videoUrl)}" controls autoplay playsinline preload="metadata" title="${escapeHtml(projectTitle)}">Your browser does not support the video tag.</video>`;
           videoWrapper.querySelector('video')?.focus();
           return;
         }
 
         const embedUrl = getEmbedUrl(videoUrl);
-        videoWrapper.innerHTML = `<iframe src="${escapeHtml(addAutoplay(embedUrl))}" title="${escapeHtml(projectTitle)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+        videoWrapper.innerHTML = `<iframe src="${escapeHtml(addAutoplay(embedUrl))}" title="${escapeHtml(projectTitle)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen></iframe>`;
       });
     }
 
@@ -683,6 +691,7 @@
     layoutMasonry(cards, columnCount);
     if ('ResizeObserver' in window) {
       masonryResizeObserver = new ResizeObserver(() => {
+        if (isVideoFullscreen()) return;
         layoutMasonry(cards, getColumnCount());
       });
       cards.forEach(card => masonryResizeObserver.observe(card));
@@ -749,6 +758,7 @@
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
+      if (isVideoFullscreen()) return;
       renderProjects();
     }, 150);
   });
