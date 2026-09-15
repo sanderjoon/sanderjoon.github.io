@@ -104,10 +104,13 @@ const projects = window.projects = [
   title: "Inktober 2021",
     year: "2021",
     videoUrl: "https://freight.cargo.site/m/V1739989098320343447109578588035/026_Connect_1.mp4",
+    thumbnailUrl: "https://freight.cargo.site/m/V1739989098320343447109578588035/026_Connect_1.mp4",
     aspectRatio: "1/1",
     tags: ["Play"],
     description: `
       <video style="aspect-ratio: 1 / 1;" controls loop><source src="https://freight.cargo.site/m/Z1739838611128802441968292528003/003_Vessel-2_1.mp4" type="video/mp4"></video>
+      <video style="aspect-ratio: 1 / 1;" controls loop><source src="https://freight.cargo.site/m/F1739989098246556470814740381571/021_Open_1.mp4" type="video/mp4"></video>
+      <video style="aspect-ratio: 1 / 1;" controls loop><source src="https://freight.cargo.site/m/V1739989098117429262298773520259/015_Helmet_1.mp4" type="video/mp4"></video>
     `
   }
   ];
