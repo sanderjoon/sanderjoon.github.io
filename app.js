@@ -406,6 +406,17 @@
     if (thumbnailTrigger) {
       const hoverPreview = thumbnailTrigger.querySelector('.video-hover-preview');
       if (hoverPreview) {
+        hoverPreview.preload = 'auto';
+        hoverPreview.addEventListener('loadedmetadata', () => {
+          if (hoverPreview.duration > 0) {
+            hoverPreview.currentTime = Math.min(0.05, hoverPreview.duration / 2);
+          }
+        }, { once: true });
+        hoverPreview.addEventListener('loadeddata', () => {
+          thumbnailTrigger.classList.add('preview-ready');
+        }, { once: true });
+        hoverPreview.load();
+
         thumbnailTrigger.addEventListener('mouseenter', () => {
           thumbnailTrigger.classList.remove('preview-paused');
           hoverPreview.play().catch(() => {});

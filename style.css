@@ -160,6 +160,10 @@ body.zoom-locked {
 }
 
 .video-thumbnail-trigger.mp4-thumbnail .video-hover-preview {
+  opacity: 0;
+}
+
+.video-thumbnail-trigger.mp4-thumbnail.preview-ready .video-hover-preview {
   opacity: 1;
 }
 
