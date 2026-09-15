@@ -366,20 +366,25 @@
 
     cards.forEach((card, index) => {
       const span = card.dataset.doubleWidth === 'true' && columnCount > 1 ? 2 : 1;
-      const preferredColumn = Math.min(index % columnCount, columnCount - span);
-      let startColumn = preferredColumn;
-      let top = Infinity;
+      const assignedColumn = Number.parseInt(card.dataset.masonryColumn, 10);
+      let startColumn = assignedColumn;
 
-      for (let candidate = 0; candidate <= columnCount - span; candidate++) {
-        const candidateTop = Math.max(...columnHeights.slice(candidate, candidate + span));
-        const isBetterPosition = candidateTop < top;
-        const isEqualAndCloser = candidateTop === top
-          && Math.abs(candidate - preferredColumn) < Math.abs(startColumn - preferredColumn);
-        if (isBetterPosition || isEqualAndCloser) {
-          startColumn = candidate;
-          top = candidateTop;
+      if (!Number.isInteger(startColumn) || startColumn > columnCount - span) {
+        const preferredColumn = Math.min(index % columnCount, columnCount - span);
+        let bestTop = Infinity;
+        startColumn = preferredColumn;
+
+        for (let candidate = 0; candidate <= columnCount - span; candidate++) {
+          const candidateTop = Math.max(...columnHeights.slice(candidate, candidate + span));
+          if (candidateTop < bestTop) {
+            startColumn = candidate;
+            bestTop = candidateTop;
+          }
         }
+        card.dataset.masonryColumn = String(startColumn);
       }
+
+      const top = Math.max(...columnHeights.slice(startColumn, startColumn + span));
 
       card.style.width = `${columnWidth * span + gap * (span - 1)}px`;
       card.style.left = `${startColumn * (columnWidth + gap)}px`;
