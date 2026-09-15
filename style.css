@@ -238,6 +238,7 @@ body.zoom-locked {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   cursor: pointer;
   user-select: none;
   background: transparent;
@@ -247,6 +248,12 @@ body.zoom-locked {
   display: flex;
   align-items: center;
   gap: 4px;
+  order: 1;
+}
+
+.arrow-toggle-btn {
+  order: 2;
+  margin-left: auto;
 }
 
 .card-title {
@@ -270,24 +277,37 @@ body.zoom-locked {
 
 /* Dropdown arrow toggle */
 .arrow-toggle-btn {
-  background: none;
+  width: 28px;
+  height: 28px;
+  background: var(--tag-bg);
   border: none;
-  padding: 4px;
+  padding: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-color);
+  color: var(--tag-text-color);
   border-radius: 50%;
+  flex-shrink: 0;
+  font-size: var(--font-size);
+  font-weight: 400;
+  line-height: 1;
+  font-family: var(--font-main);
 }
 
 .arrow-icon {
-  width: 16px;
-  height: 16px;
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 400;
+  line-height: 1;
+  text-align: center;
+  font-family: var(--font-main);
+  transform: translateY(1px);
 }
 
-.project-card.expanded .arrow-icon {
-  transform: rotate(180deg);
+.project-card.expanded .arrow-toggle-btn {
+  background: var(--tag-active-bg);
+  color: var(--tag-active-text);
 }
 
 /* Expandable Details Section: instant toggle, NO transitions, NO borders */

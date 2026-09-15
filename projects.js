@@ -30,9 +30,9 @@
 
 const projects = window.projects = [
   {
-    title: "Info",
+    title: "",
     description: `
-      <p>Hei! I'm Sander Joon, a film director and animator based in Estonia.</p>
+      <p>Hei! I'm Sander Joon, a film director and animator based in Estonia. Get in touch!</p>
       <p><a href="mailto:sander.joon@gmail.com">sander.joon@gmail.com</a></p>
       <p><a href="https://www.instagram.com/sanderjoon/">@sanderjoon</a></p>
       <p><a href="https://docs.google.com/document/d/1Hi_yvdrPqwd7v-gbUWIhDkpgFimJlm9dMqAGZVh70uQ/edit?usp=sharing">CV</a></p>
