@@ -170,6 +170,10 @@ body.zoom-locked {
   opacity: 1;
 }
 
+.video-thumbnail-trigger.autoplay-thumbnail .video-hover-preview {
+  opacity: 1;
+}
+
 .video-play-icon {
   position: absolute;
   top: 50%;

@@ -11,6 +11,7 @@
  * - videoUrl (string, optional): Any YouTube, Vimeo, or direct .mp4 link (e.g. "video.mp4" or web URL)
  * - thumbnailUrl (string, optional): Image or MP4 shown before a video starts
  * - hoverVideoUrl (string, optional): Direct .mp4 preview played while hovering the thumbnail
+ * - autoplayThumbnail (boolean, optional): Set to true to autoplay the thumbnail preview and keep it playing when not hovering
  * - imageUrl (string, optional): Image path or URL instead of video (e.g. "still.jpg")
  * - aspectRatio (string, optional): Media aspect ratio, e.g. "16/9" (default), "4/3", "1/1", "9/16", "2.39/1"
  * - tags (array of strings): Filter tags (e.g. ["Animation", "Short Film"])

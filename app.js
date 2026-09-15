@@ -238,7 +238,10 @@
         return aTitle.localeCompare(bTitle);
       });
     } else {
-      if (!shuffledProjects || shuffledProjects.length !== unpinnedProjects.length) {
+      const shuffledProjectsMatch = shuffledProjects
+        && shuffledProjects.length === unpinnedProjects.length
+        && shuffledProjects.every(project => unpinnedProjects.includes(project));
+      if (!shuffledProjectsMatch) {
         shuffledProjects = shuffle(unpinnedProjects);
       }
       ordered = shuffledProjects.filter(project => unpinnedProjects.includes(project));
@@ -448,6 +451,7 @@
 
     // Media Slot: Video (MP4/Vimeo/YouTube) OR Image OR None (pure text box)
     let mediaHtml = '';
+    const autoplayThumbnail = project.autoplayThumbnail === true;
     if (project.videoUrl) {
       const hasThumbnail = Boolean(project.thumbnailUrl);
       const thumbnailIsMp4 = isMp4Url(project.thumbnailUrl);
@@ -456,7 +460,7 @@
         ? `<video class="video-hover-preview" src="${escapeHtml(project.thumbnailUrl)}" muted loop playsinline preload="auto" aria-hidden="true"></video>`
         : `<img src="${escapeHtml(project.thumbnailUrl)}" alt="" loading="lazy">`;
       const thumbnailHtml = hasThumbnail
-        ? `<button type="button" class="video-thumbnail-trigger ${thumbnailIsMp4 ? 'mp4-thumbnail' : ''}" aria-label="Play ${escapeHtml(projectTitle || 'video')}" data-video-url="${escapeHtml(project.videoUrl)}">
+        ? `<button type="button" class="video-thumbnail-trigger ${thumbnailIsMp4 ? 'mp4-thumbnail' : ''} ${autoplayThumbnail ? 'autoplay-thumbnail' : ''}" aria-label="Play ${escapeHtml(projectTitle || 'video')}" data-video-url="${escapeHtml(project.videoUrl)}">
              ${thumbnailMediaHtml}
              ${!thumbnailIsMp4 && isMp4Url(hoverVideoUrl) ? `<video class="video-hover-preview" src="${escapeHtml(hoverVideoUrl)}" muted loop playsinline preload="auto" aria-hidden="true"></video>` : ''}
              <span class="video-play-icon" aria-hidden="true">&#9654;</span>
@@ -564,6 +568,9 @@
         }, { once: true });
         hoverPreview.addEventListener('loadeddata', () => {
           thumbnailTrigger.classList.add('preview-ready');
+          if (autoplayThumbnail) {
+            hoverPreview.play().catch(() => {});
+          }
         }, { once: true });
 
         if (previewObserver) {
@@ -571,14 +578,20 @@
         }
         loadPreview();
 
+        if (autoplayThumbnail) {
+          hoverPreview.play().catch(() => {});
+        }
+
         thumbnailTrigger.addEventListener('mouseenter', () => {
           loadPreview();
           thumbnailTrigger.classList.remove('preview-paused');
           hoverPreview.play().catch(() => {});
         });
         thumbnailTrigger.addEventListener('mouseleave', () => {
-          hoverPreview.pause();
-          thumbnailTrigger.classList.add('preview-paused');
+          if (!autoplayThumbnail) {
+            hoverPreview.pause();
+            thumbnailTrigger.classList.add('preview-paused');
+          }
         });
       }
 
