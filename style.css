@@ -17,7 +17,7 @@
   --tag-text-color: #303030;
   --tag-active-bg: #b8de11;
   --tag-active-text: #000000;
-  --gap: 24px;
+  --gap: 20px;
   --radius-video: 8px;
 }
 
@@ -31,7 +31,6 @@ html, body, button, input, select, textarea, table, td, th {
   font-family: var(--font-main);
   font-feature-settings: "ss02", "ss06", "ss11";
   font-size: var(--font-size);
-  font-variation-settings: "mono" 100;
 }
 
 body {

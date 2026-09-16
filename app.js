@@ -207,7 +207,6 @@
   function getOrderLabel() {
     return {
       shuffled: 'Shuffled',
-      curated: 'Curated',
       time: 'By Time',
       name: 'By Name'
     }[orderMode];
@@ -226,9 +225,7 @@
     const pinnedProjects = projectList.filter(project => project.pinned === true);
     const unpinnedProjects = projectList.filter(project => project.pinned !== true);
     let ordered;
-    if (orderMode === 'curated') {
-      ordered = [...unpinnedProjects];
-    } else if (orderMode === 'time') {
+    if (orderMode === 'time') {
       ordered = [...unpinnedProjects].sort((a, b) => {
         const aRange = getYearRange(a.year);
         const bRange = getYearRange(b.year);
@@ -341,7 +338,7 @@
     orderBtn.textContent = getOrderLabel();
     orderBtn.setAttribute('aria-label', `Change order, currently ${getOrderLabel()}`);
     orderBtn.addEventListener('click', () => {
-      const modes = ['shuffled', 'curated', 'time', 'name'];
+      const modes = ['shuffled', 'time', 'name'];
       orderMode = modes[(modes.indexOf(orderMode) + 1) % modes.length];
       if (orderMode === 'shuffled') shuffledProjects = shuffle(projectList);
       renderFilterBar();
