@@ -37,7 +37,7 @@ const projects = window.projects = [
     pinned: true,
     description: `
       <p>📌 Hei! I'm a film director and animator based in Estonia. Get in touch!</p>
-      <p><a href="mailto:sander.joon@gmail.com">sander.joon@gmail.com</a> <a href="https://www.instagram.com/sanderjoon/">Instagram</a> <a href="https://docs.google.com/document/d/1Hi_yvdrPqwd7v-gbUWIhDkpgFimJlm9dMqAGZVh70uQ/edit?usp=sharing">CV</a></p>
+      <i><p><a href="mailto:sander.joon@gmail.com">sander.joon@gmail.com</a> / <a href="https://www.instagram.com/sanderjoon/">Instagram</a> / <a href="https://docs.google.com/document/d/1Hi_yvdrPqwd7v-gbUWIhDkpgFimJlm9dMqAGZVh70uQ/edit?usp=sharing">CV</a></p></i>
     `
   },
   {
@@ -231,6 +231,16 @@ const projects = window.projects = [
     aspectRatio: "141/100",
     thumbnailUrl: "./videos/bluescape.mp4",
     videoUrl: "./videos/bluescape.mp4"
+  },
+  {
+    title: "The Old Man Movie 2D Cut-Out",
+    videoUrl: "https://www.youtube.com/watch?v=hcKfDRNdNJI",
+    aspectRatio: "16/9",
+    tags: ["Work"],
+    year: "2019",
+    description: `<p>I was responsible for the 2D digital cut-out sequences in the feature film The Old Man Movie (2019)
+</p>`
+
   }
 
   ];
