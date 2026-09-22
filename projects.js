@@ -238,9 +238,42 @@ const projects = window.projects = [
     aspectRatio: "16/9",
     tags: ["Work"],
     year: "2019",
-    description: `<p>I was responsible for the 2D digital cut-out sequences in the feature film The Old Man Movie (2019)
+    description: `<p>I was responsible for the 2D digital cut-out sequences in the feature film <a href="https://letterboxd.com/film/the-old-man-movie/" target="_blank">The Old Man Movie</a> (2019)
 </p>`
+  },
+  {
+    videoUrl: "https://vimeo.com/91870957",
+    year: "2014",
+    tags:["Play"]
+  },
+  {
+    videoUrl: "https://www.youtube.com/watch?v=qml7rSiT_2Q",
+    year: "2025",
+    tags:["Play"]
+  },
+  {
+    title:"Bænkevarmer",
+    description: `<p>My final assignment for <a href="https://animationworkshop.via.dk/programmes-and-courses/professional-training-courses/3d-character-animation" target="_blank">3D Character Animation professional course in The Animation Workshop</a>. I set the goal for myself to create a character, animate him, and make him interact with an object. All within a few weeks.</p>
 
+    <p>Inspired by Jacques Tati’s „Playtime“, I decided to create a character who acts in a more subtle manner. For the second part of the film, I wanted to go all out on physical movements of the whole body to get experience in animating a character running, trying to hold balance and tackle with some object.<p>
+    
+    <table-box>
+    Animated in: Maya
+    Rendered in: Blender's EEVEE
+    Sound Design made with: Renoise
+    Character rigged with: mGear Framework
+    Year: 2019
+    </table-box>`,
+    videoUrl:"https://www.youtube.com/watch?v=bk48fs2NJsQ",
+    tags:["Play"]
+  },
+  {
+    title:"Seagulls of Eden",
+    aspectRatio: "16/9",
+    imageUrl:"images/soe_9.jpg",
+    thumbnailUrl:"images/soe_9.jpg",
+    description:"A Feature Film in Progress.",
+    year:"2026"
   }
 
   ];
