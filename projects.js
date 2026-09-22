@@ -221,6 +221,7 @@ const projects = window.projects = [
   },
   {
     videoUrl: "https://www.youtube.com/watch?v=g7KOVo5Lp2Y",
+    thumbnailUrl:"https://img.youtube.com/vi/g7KOVo5Lp2Y/maxresdefault.jpg",
     tags: ["Play"],
     year: "2024"
   },
@@ -235,6 +236,7 @@ const projects = window.projects = [
   {
     title: "The Old Man Movie 2D Cut-Out",
     videoUrl: "https://www.youtube.com/watch?v=hcKfDRNdNJI",
+    thumbnailUrl:"https://img.youtube.com/vi/hcKfDRNdNJI/maxresdefault.jpg",
     aspectRatio: "16/9",
     tags: ["Work"],
     year: "2019",
@@ -248,6 +250,7 @@ const projects = window.projects = [
   },
   {
     videoUrl: "https://www.youtube.com/watch?v=qml7rSiT_2Q",
+    thumbnailUrl:"https://img.youtube.com/vi/qml7rSiT_2Q/maxresdefault.jpg",
     year: "2025",
     tags:["Play"]
   },
@@ -265,6 +268,7 @@ const projects = window.projects = [
     Year: 2019
     </table-box>`,
     videoUrl:"https://www.youtube.com/watch?v=bk48fs2NJsQ",
+    thumbnailUrl:"https://img.youtube.com/vi/bk48fs2NJsQ/maxresdefault.jpg",
     tags:["Play"]
   },
   {
