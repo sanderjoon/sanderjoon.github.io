@@ -273,7 +273,8 @@ const projects = window.projects = [
     imageUrl:"images/soe_9.jpg",
     thumbnailUrl:"images/soe_9.jpg",
     description:"A Feature Film in Progress.",
-    year:"2026"
+    year:"2026",
+    tags:["Films"]
   }
 
   ];
